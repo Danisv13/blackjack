@@ -1,13 +1,5 @@
-body {
-    font-family: Arial, sans-serif;
-    
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 100;
-    background-image: url('18195056-astratto-sfondo-di-panno-verde-sul-tavolo-del-casinò.jpg'); /* Reemplaza 'ruta_de_tu_imagen.jpg' con la ruta de tu imagen de fondo */
-    background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el fondo */
-    background-position: center; /* Centra la imagen */
-    background-repeat: no-repeat; /* Evita la repetición de la imagen */
-    height: 100vh;
-  }
+@import url('styles.css');
+main { line-height: 1.6; }
+h1 { margin-top: 24px; }
+h2 { margin-top: 28px; }
+li { margin-block: 8px; }

@@ -2,19 +2,30 @@
 <html lang="es">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reglas · Blackjack</title><link rel="stylesheet" href="styles2.css"></head>
 <body><main id="game-container">
-  <a href="index.html">Volver al juego</a>
-  <h1>Reglas del juego</h1>
+  <a href="index.html">Volver a la mesa</a>
+  <h1>Reglas y apuestas</h1>
   <p>El objetivo es superar la puntuación de la banca sin pasar de 21. Si la banca se pasa y tú no, ganas. Si las puntuaciones coinciden, la mano termina en empate.</p>
+  <h2>Tu monedero</h2>
+  <p>Empiezas con 100 monedas ficticias. La equivalencia visual es de 1 moneda por 1 euro ficticio: no hay depósitos, retiradas ni dinero real.</p>
+  <p>Escribe la apuesta con el teclado. Se admite cualquier importe positivo hasta tu saldo, con un máximo de dos decimales. La apuesta se descuenta al repartir y no puede cambiarse durante la mano.</p>
+  <table><caption>Ejemplo con una apuesta de 10 monedas</caption><thead><tr><th>Resultado</th><th>Devuelto al monedero</th><th>Ganancia o pérdida</th></tr></thead><tbody>
+    <tr><td>Victoria normal (1:1)</td><td>20</td><td>+10</td></tr>
+    <tr><td>Blackjack inicial (3:2)</td><td>25</td><td>+15</td></tr>
+    <tr><td>Empate</td><td>10</td><td>0</td></tr>
+    <tr><td>Derrota</td><td>0</td><td>−10</td></tr>
+  </tbody></table>
+  <p>Los importes devueltos incluyen la apuesta. La ganancia de blackjack se redondea al céntimo más cercano; medio céntimo se redondea hacia arriba.</p>
+  <p>Si al terminar una mano te quedas con cero monedas, recibes 100 para seguir jugando. Apostar todo no activa la recarga mientras la mano esté en curso. Si conservas una cantidad pequeña, puedes apostarla.</p>
   <h2>Valor de las cartas</h2>
   <ul><li>Las cartas del 2 al 10 valen su número.</li><li>J, Q y K valen 10.</li><li>Los ases valen 1 u 11, según lo que más convenga sin superar 21.</li></ul>
   <h2>Desarrollo de una mano</h2>
-  <p>Pulsa Repartir para recibir dos cartas. Una carta de la banca permanece oculta durante tu turno. Puedes pedir cartas o plantarte. Si te pasas de 21, pierdes inmediatamente. Si llegas a 21, la banca juega automáticamente.</p>
-  <p>Un as y una carta de valor 10 en las dos primeras cartas forman blackjack. Se comprueba al repartir: gana quien tenga blackjack, o se empata si ambos lo tienen.</p>
+  <p>Pulsa Apostar y repartir para recibir dos cartas. Una carta de la banca permanece oculta durante tu turno. Puedes pedir cartas o plantarte. Si te pasas de 21, pierdes inmediatamente. Si llegas a 21, la banca juega automáticamente.</p>
+  <p>Un as y una carta de valor 10 en las dos primeras cartas forman blackjack. Se comprueba al repartir: gana quien tenga blackjack, o se empata si ambos lo tienen. Un 21 con tres o más cartas no es blackjack y una victoria con esa mano paga 1:1.</p>
   <p>La banca pide mientras tenga menos de 17. Se planta con 17 o más, incluido el 17 suave (con un as que cuenta como 11). Después se comparan las puntuaciones.</p>
-  <h2>Sesiones y tiempo</h2>
-  <p>Cada sesión consta de tres manos. Se necesitan al menos dos victorias para ganar la sesión; los empates cuentan como manos jugadas. Usa Siguiente mano entre rondas y Nueva sesión al terminar. Los contadores se reinician únicamente al empezar otra sesión o recargar la página.</p>
-  <p>Por defecto no hay límite de tiempo. Puedes activar Contrarreloj antes de repartir: dispones de 60 segundos por mano. El tiempo transcurre también al cambiar de pestaña; si se agota, pierdes la mano.</p>
-  <p>Se usa una baraja nueva de 52 cartas por mano. Esta versión no incluye apuestas, pagos, división de parejas ni doblar.</p>
+  <p>Se usa una baraja nueva de 52 cartas por mano. Esta versión no incluye dividir parejas, doblar, seguro ni rendición.</p>
+  <h2>Continuar jugando</h2>
+  <p>No hay reloj, objetivo de victorias ni límite de manos. Al terminar, elige tu siguiente apuesta.</p>
+  <p>El saldo y la mano en curso se guardan en este navegador. Recargar conserva las cartas y la apuesta; no devuelve dinero ni vuelve a pagar un resultado. Si borras los datos del navegador o cambias de dispositivo, no se conserva el progreso. Si el almacenamiento falla, aparece un aviso y puedes seguir jugando mientras mantengas la página abierta. Utiliza una sola pestaña para jugar.</p>
   <p>La música se activa voluntariamente y el volumen se conserva si el navegador permite almacenamiento local.</p>
 </main></body>
 </html>

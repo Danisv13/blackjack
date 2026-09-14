@@ -4,26 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
-  <title>Blackjack</title>
+  <title>Blackjack · La mesa</title>
   <script src="game.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
   <main id="game-container">
-    <header><h1>Blackjack</h1><p>Tres manos. Tu mejor decisión.</p></header>
-    <details class="rules"><summary>Cómo jugar</summary>
-      <p>Acércate a 21 sin pasarte. El as vale 1 u 11 y las figuras valen 10. La banca pide hasta 17 y se planta también en 17 con un as contado como 11.</p>
-      <p>Un as y una carta de valor 10 en el reparto son blackjack. Se resuelve al repartir; si ambos tienen blackjack, empatan. Al llegar a 21 con más cartas, termina tu turno.</p>
-      <p>Gana dos de las tres manos para ganar la sesión. El contrarreloj es opcional: tienes 60 segundos por mano y agotarlos supone perder.</p>
-      <a href="index2.html">Reglas completas</a>
-    </details>
-    <div class="settings"><label><input id="timed-mode" type="checkbox"> Contrarreloj</label><span id="time-remaining">Sin límite de tiempo</span></div>
-    <p id="rondas-ganadas">Manos: 0/3 · Ganadas: 0 · Empates: 0</p>
-    <section class="hand" aria-labelledby="dealer-title"><h2 id="dealer-title">Banca</h2><div id="dealer-cards" class="cards"></div><p id="dealer-score">Puntuación: 0</p></section>
-    <section class="hand" aria-labelledby="player-title"><h2 id="player-title">Tu mano</h2><div id="player-cards" class="cards"></div><p id="player-score">Puntuación: 0</p></section>
-    <div class="actions"><button id="deal">Repartir</button><button id="hit" disabled>Pedir carta</button><button id="stand" disabled>Plantarse</button><button id="new-session" hidden>Nueva sesión</button></div>
-    <div role="status" aria-live="polite" aria-atomic="true"><p id="game-result"></p><p id="session-result"></p></div>
-    <footer class="settings"><button id="music-toggle" aria-pressed="false">Activar música</button><label>Volumen <input id="volume" type="range" min="0" max="1" step="0.05" value="0.3"></label><span id="audio-status" role="status"></span></footer>
+    <header class="topbar">
+      <div><p class="eyebrow">Tu mesa de cartas</p><h1>Blackjack<span class="brand-suit" aria-hidden="true">♠</span></h1></div>
+      <aside class="wallet" aria-label="Monedero"><span class="eyebrow">Monedero</span><div><strong id="wallet-balance">100,00</strong> <span>monedas</span></div><small id="wallet-euros">Equivalencia ficticia: 100,00 €</small></aside>
+    </header>
+    <div class="table-meta"><span>BLACKJACK PAGA 3:2</span><span>1 moneda = 1 € ficticio · Sin dinero real</span></div>
+    <section class="table" aria-label="Mesa de blackjack">
+      <div class="shoe" aria-hidden="true"><span>♠</span></div>
+      <section class="dealer-position" aria-labelledby="dealer-title"><div class="hand-label"><h2 id="dealer-title">Banca</h2><span id="dealer-score">La banca se planta en 17</span></div><div id="dealer-cards" class="cards"></div></section>
+      <div class="table-mark" aria-hidden="true">BLACKJACK<span>La banca se planta en 17</span></div>
+      <section class="player-position" aria-labelledby="player-title">
+        <div class="bet-spot"><span id="bet-caption">Tu apuesta</span><strong id="table-bet">0,00 monedas</strong></div>
+        <div id="player-cards" class="cards"></div>
+        <div class="hand-label"><h2 id="player-title">Tu mano</h2><span id="player-score">Esperando reparto</span></div>
+      </section>
+    </section>
+    <section class="play-panel" aria-label="Controles de juego">
+      <form id="bet-form" novalidate><label for="bet-amount">Importe de la apuesta <span>(monedas)</span></label><div class="bet-controls"><input id="bet-amount" type="number" inputmode="decimal" step="0.01" min="0.01" value="10" aria-describedby="bet-error"><button id="deal" type="submit">Apostar y repartir</button></div><p id="bet-error" role="alert"></p></form>
+      <div class="actions"><button id="hit" class="secondary" disabled>Pedir carta</button><button id="stand" class="secondary" disabled>Plantarse</button></div>
+    </section>
+    <section id="result-panel" class="result-panel" role="status" aria-live="polite" aria-atomic="true"><h2 id="result-title">La mesa está lista</h2><p id="game-result">Elige cuánto apostar y recibe tus cartas.</p><p id="payout-detail"></p><p id="refill-message"></p></section>
+    <p id="storage-status" class="notice" role="status"></p>
+    <details class="rules"><summary>Reglas y pagos</summary><p>Ganas si superas a la banca sin pasar de 21. Una victoria paga 1:1; un blackjack inicial paga 3:2. En ambos casos recuperas además la apuesta. Los empates devuelven lo apostado.</p><p>Por ejemplo, apostar 10 devuelve 20 al ganar o 25 con blackjack. Si pierdes, no se devuelve la apuesta. Al quedarte sin saldo, el monedero se repone a 100 monedas.</p><p>Introduce cualquier importe positivo con hasta dos decimales. Los pagos de blackjack se redondean al céntimo más cercano. No hay límite de tiempo ni sesiones por rondas.</p><a href="index2.html">Ver todas las reglas</a></details>
+    <footer><div class="audio-controls"><button id="music-toggle" class="text-button" aria-pressed="false">Activar música</button><label>Volumen <input id="volume" type="range" min="0" max="1" step="0.05" value="0.3"></label><span id="audio-status" role="status"></span></div><small>Monedas de juego sin valor monetario. Saldo y mano guardados en este navegador.</small></footer>
     <audio id="musica1" loop preload="none"><source src="jazz-cafe-143906.mp3" type="audio/mpeg"></audio>
   </main>
 </body>

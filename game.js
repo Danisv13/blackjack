@@ -1,6 +1,6 @@
 'use strict';
 
-// Motor independiente de la interfaz y del reloj.
+// Motor independiente de la interfaz. Importes en céntimos de moneda ficticia.
 const Blackjack = (() => {
   const suits = ['Corazones', 'Diamantes', 'Tréboles', 'Picas'];
   const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -20,20 +20,19 @@ const Blackjack = (() => {
   class Game {
     constructor(deckFactory = createDeck) {
       this.deckFactory = deckFactory;
-      this.reset();
-    }
-    reset() {
       this.phase = 'idle';
       this.deck = [];
       this.player = [];
       this.dealer = [];
       this.result = null;
-      this.rounds = 0;
-      this.wins = 0;
-      this.draws = 0;
+      this.balance = 10000;
+      this.wager = 0;
     }
-    deal() {
-      if (this.phase === 'player' || this.phase === 'dealer' || this.rounds >= 3) return false;
+    deal(wager) {
+      if (this.phase === 'player' || this.phase === 'dealer') return false;
+      if (!Number.isSafeInteger(wager) || wager <= 0 || wager > this.balance) return false;
+      this.balance -= wager;
+      this.wager = wager;
       this.deck = this.deckFactory();
       this.player = [this.deck.pop(), this.deck.pop()];
       this.dealer = [this.deck.pop(), this.deck.pop()];
@@ -62,20 +61,53 @@ const Blackjack = (() => {
       this.finish(player > 21 ? 'loss' : dealer > 21 || player > dealer ? 'win' : player < dealer ? 'loss' : 'push', dealer > 21 ? 'dealer-bust' : 'score');
       return true;
     }
-    expire() {
-      if (this.phase !== 'player') return false;
-      return this.finish('loss', 'timeout');
+    snapshot() {
+      return JSON.parse(JSON.stringify({ version: 1, phase: this.phase, deck: this.deck, player: this.player, dealer: this.dealer, balance: this.balance, wager: this.wager, result: this.result }));
+    }
+    static restore(data, deckFactory = createDeck) {
+      if (!data || data.version !== 1 || !['idle', 'player', 'finished'].includes(data.phase)) throw new Error('Partida guardada no válida.');
+      const money = value => Number.isSafeInteger(value) && value >= 0;
+      if (!money(data.balance) || !money(data.wager)) throw new Error('Saldo guardado no válido.');
+      if (![data.deck, data.player, data.dealer].every(Array.isArray)) throw new Error('Cartas guardadas no válidas.');
+      const all = [...data.deck, ...data.player, ...data.dealer];
+      if (all.some(card => !card || !suits.includes(card.suit) || !ranks.includes(card.rank)) || new Set(all.map(card => card.rank + card.suit)).size !== all.length) throw new Error('Baraja guardada no válida.');
+      if (data.phase === 'idle') {
+        if (all.length || data.wager || data.result || !data.balance) throw new Error('Estado inicial no válido.');
+      } else {
+        if (all.length !== 52 || data.player.length < 2 || data.dealer.length < 2) throw new Error('Mano incompleta.');
+        if (data.phase === 'player' && (!data.wager || data.result || data.dealer.length !== 2 || score(data.player) >= 21 || score(data.dealer) === 21)) throw new Error('Turno guardado no válido.');
+        if (data.phase === 'finished') {
+          const r = data.result;
+          if (data.wager || !data.balance || !r || !['win', 'loss', 'push'].includes(r.outcome) || !['blackjack', 'bust', 'dealer-bust', 'score'].includes(r.reason) || !money(r.wager) || !r.wager || !money(r.payout) || r.net !== r.payout - r.wager || ![0, 10000].includes(r.refill)) throw new Error('Resultado guardado no válido.');
+          const expected = r.outcome === 'loss' ? 0 : r.wager + (r.outcome === 'win' ? (r.reason === 'blackjack' ? Math.round(r.wager * 1.5) : r.wager) : 0);
+          if (r.payout !== expected) throw new Error('Pago guardado no válido.');
+        }
+      }
+      const game = new Game(deckFactory);
+      const copy = JSON.parse(JSON.stringify(data));
+      for (const key of ['phase', 'deck', 'player', 'dealer', 'balance', 'wager', 'result']) game[key] = copy[key];
+      return game;
     }
     finish(outcome, reason) {
       if (this.phase !== 'player' && this.phase !== 'dealer') return false;
       this.phase = 'finished';
-      this.result = { outcome, reason };
-      this.rounds++;
-      if (outcome === 'win') this.wins++;
-      if (outcome === 'push') this.draws++;
+      const profit = outcome === 'win' ? (reason === 'blackjack' ? Math.round(this.wager * 1.5) : this.wager) : 0;
+      const payout = outcome === 'loss' ? 0 : this.wager + profit;
+      this.balance += payout;
+      const refill = this.balance === 0 ? 10000 : 0;
+      this.balance += refill;
+      this.result = { outcome, reason, wager: this.wager, payout, net: payout - this.wager, refill };
+      this.wager = 0;
       return true;
     }
   }
-  return { Game, score, createDeck };
+  function parseWager(value) {
+    const text = String(value).trim().replace(',', '.');
+    if (!/^\d+(?:\.\d{1,2})?$/.test(text)) return null;
+    const [whole, fraction = ''] = text.split('.');
+    const cents = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));
+    return Number.isSafeInteger(cents) && cents > 0 ? cents : null;
+  }
+  return { Game, score, createDeck, parseWager };
 })();
 if (typeof module !== 'undefined') module.exports = Blackjack;

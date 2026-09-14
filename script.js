@@ -1,187 +1,114 @@
-let countdown;
-let timeRemaining = 60; // Tiempo en segundos
-const numeroRondasObjetivo = 3;
-let rondasJugadas = 0;
-let objetivoAlcanzado = false;
-let rondasGanadas = 0;
+'use strict';
 
-function startCountdown() {
-  countdown = setInterval(function () {
-    timeRemaining--;
-    updateUI();
-    
-    if (timeRemaining <= 0) {
-      endGame('¡Se acabó el tiempo! Has perdido.');
-    }
-  }, 1000); // Actualiza cada segundo
-}
+const game = new Blackjack.Game();
+const byId = id => document.getElementById(id);
+let countdown = null;
+let deadline = 0;
+let timeRemaining = 60;
 
 function stopCountdown() {
-  clearInterval(countdown);
+  if (countdown !== null) clearInterval(countdown);
+  countdown = null;
 }
-
-function resetCountdown() {
-  timeRemaining = 60; // Reinicia el tiempo
-}
-
-const suits = ['Corazones', 'Diamantes', 'Tréboles', 'Picas'];
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-
-let deck = [];
-let playerHand = [];
-let dealerHand = [];
-let playerScore = 0;
-let dealerScore = 0;
-
-function createDeck() {
-  deck = [];
-  for (let suit of suits) {
-    for (let rank of ranks) {
-      deck.push({ suit, rank });
-    }
-  }
-}
-
-function shuffleDeck() {
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
-}
-
-function deal() {
-  // Restablece el tiempo cuando el jugador comienza un nuevo juego
-  resetCountdown();
-  
-  // Restablece variables relacionadas con el objetivo de rondas
-  rondasJugadas = 0;
-  objetivoAlcanzado = false;
-  
-  createDeck();
-  shuffleDeck();
-  playerHand = [drawCard(), drawCard()];
-  dealerHand = [drawCard(), drawCard()];
-  playerScore = calculateScore(playerHand);
-  dealerScore = calculateScore(dealerHand);
-
-  updateUI();
-  
-  // Inicia la cuenta atrás al comenzar el juego
-  startCountdown();
-}
-
-function drawCard() {
-  return deck.pop();
-}
-
-function calculateScore(hand) {
-  let score = 0;
-  let hasAce = false;
-
-  for (let card of hand) {
-    if (card.rank === 'A') {
-      hasAce = true;
-    }
-    score += getCardValue(card.rank);
-  }
-
-  if (hasAce && score + 10 <= 21) {
-    score += 10; // Contar el As como 11 si no pasa de 21
-  }
-
-  return score;
-}
-
-function getCardValue(rank) {
-  if (rank === 'J' || rank === 'Q' || rank === 'K') {
-    return 10;
-  } else if (rank === 'A') {
-    return 1; // El As se cuenta como 1 por defecto
-  } else {
-    return parseInt(rank);
-  }
-}
-
-function hit() {
-  playerHand.push(drawCard());
-  playerScore = calculateScore(playerHand);
-  updateUI();
-
-  if (playerScore > 21) {
-    endGame('¡Has perdido! Superaste 21.');
-  }
-}
-
-function stand() {
-  while (dealerScore < 17) {
-    dealerHand.push(drawCard());
-    dealerScore = calculateScore(dealerHand);
-  }
-
-  updateUI();
-
-  if (dealerScore > 21 || playerScore > dealerScore) {
-    endGame('¡Has ganado!');
-  } else if (playerScore < dealerScore) {
-    endGame('¡Has perdido!');
-  } else {
-    endGame('¡Es un empate!');
-  }
-}
-function updateUI() {
-  displayHand(playerHand, 'player-cards', 'player-score');
-  displayHand(dealerHand, 'dealer-cards', 'dealer-score');
-  const timeRemainingElement = document.getElementById('time-remaining');
-  if (timeRemainingElement) {
-    timeRemainingElement.textContent = `Tiempo restante: ${timeRemaining} segundos`;
-  }
-}
-
-function displayHand(hand, cardsElementId, scoreElementId) {
-  const cardsElement = document.getElementById(cardsElementId);
-  const scoreElement = document.getElementById(scoreElementId);
-  cardsElement.innerHTML = '';
-  scoreElement.textContent = `Puntuación: ${calculateScore(hand)}`;
-
-  for (let card of hand) {
-    const cardElement = document.createElement('div');
-    cardElement.textContent = `${card.rank} de ${card.suit}`;
-    cardsElement.appendChild(cardElement);
-  }
-}
-function endGame(message) {
-  // Detiene la cuenta atrás al finalizar el juego
+function checkDeadline() {
+  if (!deadline || game.phase !== 'player') return false;
+  timeRemaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  if (timeRemaining > 0) return false;
+  game.expire();
   stopCountdown();
-  
-  const resultElement = document.getElementById('game-result');
-  if (resultElement) {
-    resultElement.textContent = message;
-  }
-
-  rondasJugadas++;
-
-  // Incrementa las rondas ganadas cuando el jugador gana la ronda
-  if (message.includes('¡Has ganado!')) {
-    rondasGanadas++;
-  }
-
-  // Muestra las rondas ganadas en la interfaz
-  const rondasGanadasElement = document.getElementById('rondas-ganadas');
-  if (rondasGanadasElement) {
-    rondasGanadasElement.textContent = `Rondas Ganadas: ${rondasGanadas}`;
-  }
-
-  if (rondasJugadas >= numeroRondasObjetivo) {
-    // El jugador completó el número objetivo de rondas
-    console.log('¡Has completado el número objetivo de rondas!');
-
-    if (rondasGanadas >= rondasJugadas / 2) {
-      console.log('¡Has ganado más de la mitad de las rondas! ¡Ganaste el juego!');
-    } else {
-      console.log('No has ganado más de la mitad de las rondas. ¡Perdiste el juego!');
-    }
-  } else {
-    // Reinicia el tiempo cuando el jugador vuelva a jugar
-    resetCountdown();
-  }
+  return true;
 }
+function startCountdown() {
+  stopCountdown();
+  deadline = 0;
+  timeRemaining = 60;
+  if (!byId('timed-mode').checked || game.phase !== 'player') return;
+  deadline = Date.now() + 60000;
+  countdown = setInterval(() => { checkDeadline(); render(); }, 250);
+}
+function deal() {
+  if (!game.deal()) return;
+  startCountdown();
+  render();
+}
+function act(action) {
+  if (!checkDeadline()) game[action]();
+  if (game.phase === 'finished') stopCountdown();
+  render();
+}
+function displayHand(hand, id, hidden) {
+  const container = byId(id);
+  container.replaceChildren();
+  const symbols = { Corazones: '♥', Diamantes: '♦', Tréboles: '♣', Picas: '♠' };
+  hand.forEach((card, index) => {
+    const element = document.createElement('div');
+    if (hidden && index === 1) {
+      element.className = 'card card-back';
+      element.textContent = '?';
+      element.setAttribute('aria-label', 'Carta oculta');
+    } else {
+      element.className = 'card' + (['Corazones', 'Diamantes'].includes(card.suit) ? ' red' : '');
+      element.textContent = `${card.rank} ${symbols[card.suit]}`;
+      element.setAttribute('aria-label', `${card.rank} de ${card.suit}`);
+    }
+    container.appendChild(element);
+  });
+}
+function render() {
+  const active = game.phase === 'player';
+  displayHand(game.player, 'player-cards', false);
+  displayHand(game.dealer, 'dealer-cards', active);
+  byId('player-score').textContent = `Puntuación: ${Blackjack.score(game.player)}`;
+  byId('dealer-score').textContent = active ? `Carta visible: ${Blackjack.score(game.dealer.slice(0, 1))}` : `Puntuación: ${Blackjack.score(game.dealer)}`;
+  byId('deal').disabled = active || game.rounds >= 3;
+  byId('deal').textContent = game.rounds ? 'Siguiente mano' : 'Repartir';
+  byId('hit').disabled = !active;
+  byId('stand').disabled = !active;
+  byId('new-session').hidden = game.rounds < 3;
+  byId('timed-mode').disabled = active;
+  byId('time-remaining').textContent = byId('timed-mode').checked ? `Tiempo restante: ${timeRemaining} segundos` : 'Sin límite de tiempo';
+  byId('rondas-ganadas').textContent = `Manos: ${game.rounds}/3 · Ganadas: ${game.wins} · Empates: ${game.draws}`;
+  const outcomes = { win: '¡Has ganado!', loss: 'Has perdido.', push: 'Es un empate.' };
+  const reasons = { blackjack: 'Blackjack inicial.', bust: 'Superaste 21.', 'dealer-bust': 'La banca superó 21.', timeout: 'Se acabó el tiempo.', score: 'Se comparan las puntuaciones.' };
+  byId('game-result').textContent = game.result ? `${outcomes[game.result.outcome]} ${reasons[game.result.reason]}` : active ? 'Tu turno: pide carta o plántate.' : 'Pulsa Repartir para comenzar.';
+  byId('session-result').textContent = game.rounds >= 3 ? `Sesión completada. ${game.wins >= 2 ? 'Has ganado la sesión.' : 'Necesitas dos victorias para ganar la sesión.'}` : '';
+}
+byId('deal').addEventListener('click', deal);
+byId('hit').addEventListener('click', () => act('hit'));
+byId('stand').addEventListener('click', () => act('stand'));
+byId('timed-mode').addEventListener('change', render);
+byId('new-session').addEventListener('click', () => {
+  stopCountdown();
+  deadline = 0;
+  timeRemaining = 60;
+  game.reset();
+  render();
+});
+window.addEventListener('pagehide', stopCountdown);
+window.addEventListener('pageshow', () => {
+  checkDeadline();
+  if (deadline && game.phase === 'player' && countdown === null) {
+    countdown = setInterval(() => { checkDeadline(); render(); }, 250);
+  }
+  render();
+});
+document.addEventListener('visibilitychange', () => { checkDeadline(); render(); });
+
+const music = byId('musica1');
+const musicButton = byId('music-toggle');
+try { music.volume = Math.min(1, Math.max(0, Number(localStorage.getItem('blackjack-volume') ?? 0.3) || 0)); } catch { music.volume = 0.3; }
+byId('volume').value = music.volume;
+musicButton.addEventListener('click', async () => {
+  if (!music.paused) music.pause();
+  else {
+    try { await music.play(); } catch { byId('audio-status').textContent = 'No se pudo reproducir la música.'; return; }
+  }
+  byId('audio-status').textContent = '';
+  musicButton.textContent = music.paused ? 'Activar música' : 'Pausar música';
+  musicButton.setAttribute('aria-pressed', String(!music.paused));
+});
+byId('volume').addEventListener('input', event => {
+  music.volume = Number(event.target.value);
+  try { localStorage.setItem('blackjack-volume', String(music.volume)); } catch { /* El juego funciona sin almacenamiento. */ }
+});
+render();

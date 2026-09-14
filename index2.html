@@ -1,21 +1,20 @@
-<html>
-<head>
-    <title>Reglas</title>
-    <a href="index.html">Volver</a>
-    <link rel="stylesheet" href="styles2.css">
-   
-</head>
-<body>
-    <h2>El objetivo en cualquier mano de blackjack es derrotar a la banca. Para lograrlo, debes tener una mano que puntúe más que la mano de la banca, pero que no supere los 21 en su valor total. También puedes ganar con menos de 22, siempre que la banca supere los 21.</h2>
-    <h2>Puedes pedir cartas adicionales para mejorar tu mano. Las cartas se pueden pedir de una en una hasta que el valor de la mano sea igual o superior a 21.</h2>
-     <h2>Cuando el valor de una mano es igual o inferior a 21, puedes decidir plantarte y no arriesgarte a que el valor de dicha mano supere los 21.</h2>
-     <h2>Si el total sumado supera 21 se tendra que volver a repartir cartas, mediante la opción repartir, para comenzar la siguiente ronda.</h2>
-     <h2>El juego comenzara de nuevo mediante el uso del boton repartir.</h2>
-     <h2>Hay 60 segundos por cada jugada. Cuando el tiempo llegue a 0 el jugador perdera automaticamente.</h2>
-     <h2>– Cada carta numerada del 2 al 10 (2, 3, 4, 5, 6, 7, 8, 9, 10) tendrá un valor idéntico a su valor numérico.</h2>
-     <h2>– Las figuras (Jotas, Reinas y Reyes) valen todas 10 puntos.</h2>
-     <h2>– Los Ases  pueden valer tanto 1 como 11 puntos, según lo que sea más conveniente para una mano en particular.</h2>
-
-     
-</body>
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reglas · Blackjack</title><link rel="stylesheet" href="styles2.css"></head>
+<body><main id="game-container">
+  <a href="index.html">Volver al juego</a>
+  <h1>Reglas del juego</h1>
+  <p>El objetivo es superar la puntuación de la banca sin pasar de 21. Si la banca se pasa y tú no, ganas. Si las puntuaciones coinciden, la mano termina en empate.</p>
+  <h2>Valor de las cartas</h2>
+  <ul><li>Las cartas del 2 al 10 valen su número.</li><li>J, Q y K valen 10.</li><li>Los ases valen 1 u 11, según lo que más convenga sin superar 21.</li></ul>
+  <h2>Desarrollo de una mano</h2>
+  <p>Pulsa Repartir para recibir dos cartas. Una carta de la banca permanece oculta durante tu turno. Puedes pedir cartas o plantarte. Si te pasas de 21, pierdes inmediatamente. Si llegas a 21, la banca juega automáticamente.</p>
+  <p>Un as y una carta de valor 10 en las dos primeras cartas forman blackjack. Se comprueba al repartir: gana quien tenga blackjack, o se empata si ambos lo tienen.</p>
+  <p>La banca pide mientras tenga menos de 17. Se planta con 17 o más, incluido el 17 suave (con un as que cuenta como 11). Después se comparan las puntuaciones.</p>
+  <h2>Sesiones y tiempo</h2>
+  <p>Cada sesión consta de tres manos. Se necesitan al menos dos victorias para ganar la sesión; los empates cuentan como manos jugadas. Usa Siguiente mano entre rondas y Nueva sesión al terminar. Los contadores se reinician únicamente al empezar otra sesión o recargar la página.</p>
+  <p>Por defecto no hay límite de tiempo. Puedes activar Contrarreloj antes de repartir: dispones de 60 segundos por mano. El tiempo transcurre también al cambiar de pestaña; si se agota, pierdes la mano.</p>
+  <p>Se usa una baraja nueva de 52 cartas por mano. Esta versión no incluye apuestas, pagos, división de parejas ni doblar.</p>
+  <p>La música se activa voluntariamente y el volumen se conserva si el navegador permite almacenamiento local.</p>
+</main></body>
 </html>

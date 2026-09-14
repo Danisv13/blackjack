@@ -1,96 +1,27 @@
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-image: url('18195056-astratto-sfondo-di-panno-verde-sul-tavolo-del-casinò.jpg'); /* Reemplaza 'ruta_de_tu_imagen.jpg' con la ruta de tu imagen de fondo */
-  background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el fondo */
-  background-position: center; /* Centra la imagen */
-  background-repeat: no-repeat; /* Evita la repetición de la imagen */
-}
-
-
-/* Estilos del contenedor principal del juego */
-#game-container {
-  text-align: center;
-  
-}
-#rondas-ganadas{
-    border: 1px solid #000;
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 4px; 
-  background-color: #f8f9fa;
-  
-}
-/* Estilos de las manos del jugador y del repartidor */
-#dealer-hand {
-  margin: 10px;
-  background-color: #fff; 
-  border-radius: 8px; 
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade sombra */
-}
-#player-hand{
-  margin: 40px;
-  background-color: #fff; 
-  border-radius: 8px; 
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-}
- 
-
-/* Estilos de las cartas del jugador y del repartidor */
-#player-cards{
-  border: 1px solid #000;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px; /* Añade esquinas redondeadas */
-  background-color: #f8f9fa; /* Cambia el color de fondo según tus preferencias */
-}
- #dealer-cards {
-  border: 1px solid #000;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px; /* Añade esquinas redondeadas */
-  background-color: #f8f9fa; /* Cambia el color de fondo según tus preferencias */
-}
-
-/* Estilos de los botones */
-button {
-  margin-top: 10px;
-  cursor: pointer;
-  padding: 10px;
-  background-color: #C7DCA7;
-  color: #000000; /* Cambia el color del texto según tus preferencias */
-  border: none;
-  border-radius: 4px; /* Añade esquinas redondeadas */
-  font-size: 16px;
-  transition: background-color 0.3s ease; /* Añade transición al color de fondo */
-}
-
-button:hover {
-  background-color: #2980b9; /* Cambia el color de fondo al pasar el ratón sobre el botón */
-}
-#time-remaining {
-  
-  margin-top: 10px;
-  cursor: pointer;
-  padding: 10px;
-  background-color: #C7DCA7; 
-  color: #000000; 
-  border: none;
-  border-radius: 4px; 
-  font-size: 16px;
-  
-}
-#game-result {
-  border: 1px solid #000;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px; 
-  background-color: #f8f9fa;
-  
-}
+:root { color-scheme: dark; font-family: Arial, sans-serif; color: #f6f4e9; background: #102d26; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; padding: 24px 16px; background: radial-gradient(ellipse at top, #235646, #102d26); }
+#game-container { width: min(100%, 760px); margin: auto; }
+header { text-align: center; margin-bottom: 24px; }
+h1 { font-size: clamp(2rem, 7vw, 3rem); margin: 0; }
+h2 { font-size: 1.1rem; margin-top: 0; }
+p { line-height: 1.6; }
+a { color: #f6d88b; }
+.rules, .hand { border: 1px solid #71978a; border-radius: 12px; padding: 18px; margin-block: 16px; background: #12392f; }
+summary { cursor: pointer; padding: 4px; }
+.settings { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.settings label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.cards { display: flex; gap: 10px; flex-wrap: wrap; min-height: 100px; }
+.card { display: grid; place-items: center; width: 68px; height: 96px; background: #fffaf0; color: #152a27; border-radius: 7px; border: 2px solid #e0d9c9; font-size: 1.3rem; font-weight: bold; box-shadow: 0 4px 8px #0003; }
+.card.red { color: #ad1832; }
+.card-back { background: repeating-linear-gradient(45deg, #264e76, #264e76 5px, #1e4165 5px, #1e4165 10px); color: white; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+button { min-height: 44px; padding: 10px 18px; border: 1px solid transparent; border-radius: 7px; font: inherit; font-weight: bold; cursor: pointer; background: #f6d88b; color: #172c25; }
+button:hover:not(:disabled) { background: #ffe8b0; }
+button:disabled { opacity: .45; cursor: default; }
+:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+[hidden] { display: none !important; }
+#game-result { min-height: 2em; font-weight: bold; }
+footer { border-top: 1px solid #71978a; padding-top: 20px; margin-top: 24px; }
+input[type="range"] { width: 120px; }
+@media (max-width: 420px) { body { padding: 16px 10px; } .hand { padding: 12px; } .actions button { flex: 1 1 40%; } .card { width: 56px; height: 82px; } }
